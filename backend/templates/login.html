@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}?v={{ random }}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      crossorigin="anonymous">
+</head>
+<body>
+    <div class="tab-button-container">
+        <div class="button-container">
+            <button class="reg-tab-button" type="button" id="tab_reg">
+                Зарегистрироваться
+            </button>
+            <button class="login-tab-button" type="button" id="tab_login">
+                Войти
+            </button>
+        </div>
+        <div class="register-form" id="register_form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('auth.register') }}">
+                {{ form_register.csrf_token }}
+                <div class="form-group">
+                    {{ form_register.username(id='register-username', class='form-control', placeholder='Username') }}
+                </div>
+                <div class="form-group">
+                    {{ form_register.password(id='register-password', class='form-control', placeholder='Password') }}
+                </div>
+                <div class="form-group">
+                    {{ form_register.confirm_password(id='confirm-password', class='form-control', placeholder='Confirm Password') }}
+                </div>
+                <button type="submit" class="btn btn-success btn-form">Зарегистрироваться</button>
+            </form>
+        </div>
+        <div class="login-form" id="login_form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                {{ form_login.csrf_token }}
+                <div class="form-group">
+                    {{ form_login.username(id='login-username', class='form-control', placeholder='Username') }}
+                </div>
+                <div class="form-group">
+                    {{ form_login.password(id='login-password', class='form-control', placeholder='Password') }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-form">Войти</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/login.js') }}?v={{ random }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+</body>
+</html>
