@@ -11,10 +11,11 @@ def login():
         if form_login.validate_on_submit():
             username = form_login.username.data
             password = form_login.password.data
-
-            if is_user_exist(username, password):
+            user = is_user_exist(username, password)
+            if user:
                 flash('Login successful!', 'success')
                 session["username"] = username
+                session["user_id"] = user
                 return redirect(url_for('home.home'))
             else:
                 flash('Invalid username or password. Please try again.', 'danger')
