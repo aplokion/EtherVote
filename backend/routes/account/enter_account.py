@@ -1,5 +1,5 @@
 from flask import session, redirect, url_for, render_template, jsonify
-from utils import get_user_elections_dict
+from utils.mysql_actions import get_user_elections_dict
 
 
 def enter_account():
