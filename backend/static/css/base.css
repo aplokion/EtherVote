@@ -1,0 +1,15 @@
+div {
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+.header {
+    position: fixed;
+    width: 100%;
+    background: #fff;
+    z-index: 100;
+  }
+
+.container{
+    padding: 100px 0;
+}
