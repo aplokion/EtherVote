@@ -1,12 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account</title>
-</head>
-<body>
-    <h1>Welcome</h1>
-    <p>This is your account page.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+Аккаунт
+{% endblock %}
+
+{% block body %}
+<div class="user-info">
+    <h1>Информация о пользователе</h1>
+    <img src="{{ url_for('static', filename='img/user.png') }}" alt="User Icon" class="user-icon">
+    <p class="user-login">Логин: {{ username }}</p>
+</div>
+
+<h2>Голосования пользователя:</h2>
+<ul id="elections-list"></ul>
+
+<script>
+$(document).ready(function() {
+    $.get('/account/get_user_elections_list', function(data) {
+        if ($.isEmptyObject(data)) {
+            $('#elections-list').append('<li>Пользователь не участвует в голосованиях</li>');
+        } else {
+            $.each(data, function(electionId, electionInfo) {
+                $('#elections-list').append(
+                    '<li>' +
+                    'Голосование №' + electionId +
+                    ', Тема: ' + electionInfo.topic +
+                    ', Дата начала: ' + electionInfo.date_start +
+                    ', Дата окончания: ' + electionInfo.date_end +
+                    ', Создатель: ' + electionInfo.creator +
+                    ', Выбор: ' + electionInfo.choice +
+                    '</li>'
+                );
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
