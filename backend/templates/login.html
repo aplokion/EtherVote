@@ -18,17 +18,11 @@
                 Войти
             </button>
         </div>
+        <div id="message">
+
+        </div>
         <div class="register-form" id="register_form">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-            <form method="POST" action="{{ url_for('auth.register') }}">
+            <form method="POST" name="register">
                 {{ form_register.csrf_token }}
                 <div class="form-group">
                     {{ form_register.username(id='register-username', class='form-control', placeholder='Username') }}
@@ -43,16 +37,7 @@
             </form>
         </div>
         <div class="login-form" id="login_form">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-            <form method="POST" action="{{ url_for('auth.login') }}">
+            <form method="POST" name="login">
                 {{ form_login.csrf_token }}
                 <div class="form-group">
                     {{ form_login.username(id='login-username', class='form-control', placeholder='Username') }}
@@ -60,8 +45,12 @@
                 <div class="form-group">
                     {{ form_login.password(id='login-password', class='form-control', placeholder='Password') }}
                 </div>
+                <div class="form-group">
+                    {{ form_login.token(id='login-token', class='form-control', placeholder='enter your token') }}
+                </div>
                 <button type="submit" class="btn btn-primary btn-form">Войти</button>
             </form>
+            
         </div>
     </div>
     
