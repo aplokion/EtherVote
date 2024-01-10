@@ -1,0 +1,14 @@
+/etherium/node_modules
+/backend/classes/__pycache__
+/backend/routes/account/__pycache__
+/backend/routes/auth/__pycache__
+/backend/routes/home/__pycache__
+/backend/routes/__pycache__
+/backend/utils/__pycache__
+backend/routes/__pycache__/__init__.cpython-311.pyc
+backend/routes/auth/__pycache__/login.cpython-311.pyc
+backend/utils/__pycache__/mysql_actions.cpython-311.pyc
+backend/routes/auth/__pycache__/login.cpython-311.pyc
+backend/utils/__pycache__/mysql_actions.cpython-311.pyc
+backend/routes/__pycache__/__init__.cpython-311.pyc
+etherium/.solc-version
