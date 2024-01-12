@@ -20,3 +20,20 @@ div {
     border-radius: 50%;
     margin-right: 10px;
 }
+
+.user-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.user-login {
+    font-size: 18px;
+}
+
+.list-group-item {
+    border-color: #dee2e6;
+}
+
+.list-group-item strong {
+    font-size: 18px;
+}

@@ -12,28 +12,7 @@
 </div>
 
 <h2>Голосования пользователя:</h2>
-<ul id="elections-list"></ul>
+<ul id="elections-list" class="list-group"></ul>
 
-<script>
-$(document).ready(function() {
-    $.get('/account/get_user_elections_list', function(data) {
-        if ($.isEmptyObject(data)) {
-            $('#elections-list').append('<li>Пользователь не участвует в голосованиях</li>');
-        } else {
-            $.each(data, function(electionId, electionInfo) {
-                $('#elections-list').append(
-                    '<li>' +
-                    'Голосование №' + electionId +
-                    ', Тема: ' + electionInfo.topic +
-                    ', Дата начала: ' + electionInfo.date_start +
-                    ', Дата окончания: ' + electionInfo.date_end +
-                    ', Создатель: ' + electionInfo.creator +
-                    ', Выбор: ' + electionInfo.choice +
-                    '</li>'
-                );
-            });
-        }
-    });
-});
-</script>
+<script src="{{ url_for('static', filename='js/account.js') }}"></script>
 {% endblock %}

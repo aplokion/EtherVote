@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Голосование
+{% endblock %}
+
+{% block body %}
+<div class="voting-info">
+    <h1>Голосование</h1>
+    <p>Выберите один из вариантов ответа:</p>
+</div>
+
+<div class="options-container" id="options-container">
+    <!-- Варианты ответа будут добавлены здесь динамически -->
+</div>
+
+<button id="vote-button" class="btn btn-primary">Проголосовать</button>
+<div id="message" class="mt-3"></div>
+
+<script src="{{ url_for('static', filename='js/voting.js') }}"></script>
+{% endblock %}
