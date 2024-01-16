@@ -14,6 +14,7 @@ def get_free_account():
     contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
     for token in w3.eth.accounts:
         user_data = contract.functions.getUserData(token).call()
+        user_data = contract.functions.getUserData(token).call()
         print(token, user_data)
         if user_data == ['', '']:
             return token
@@ -34,6 +35,7 @@ def register_user(login, password):
 
         # Вызываем функцию контракта для регистрации пользователя
         tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
+        tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
 
         # Ждем, пока транзакция будет подтверждена
         w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -51,7 +53,6 @@ def get_user_info(token, login, password):
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
         # Вызываем функцию контракта для получения данных пользователя
-
         # user_data = contract.functions.getUserData().call({'from': token})
         user_data = contract.functions.getUserData(token).call()
         # Проверяем, совпадает ли пароль
@@ -60,7 +61,7 @@ def get_user_info(token, login, password):
             stored_hash = stored_password.encode('utf-8')
             check_password = bcrypt.checkpw(password.encode(), stored_hash)
         except ValueError:
-
+            return False
         if check_password:
             print(f"User {login} authenticated successfully.")
             print(user_data)

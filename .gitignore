@@ -15,3 +15,9 @@ backend/routes/__pycache__/__init__.cpython-311.pyc
 etherium/contracts/.gitkeep
 etherium/migrations/.gitkeep
 etherium/test/.gitkeep
+.vscode/settings.json
+etherium/zk/verification.key
+etherium/zk/proving.key
+etherium/zk/out.r1cs
+etherium/zk/out
+etherium/zk/abi.json
