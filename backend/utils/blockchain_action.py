@@ -51,6 +51,7 @@ def get_user_info(token, login, password):
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
         # Вызываем функцию контракта для получения данных пользователя
+
         # user_data = contract.functions.getUserData().call({'from': token})
         user_data = contract.functions.getUserData(token).call()
         # Проверяем, совпадает ли пароль
@@ -59,7 +60,7 @@ def get_user_info(token, login, password):
             stored_hash = stored_password.encode('utf-8')
             check_password = bcrypt.checkpw(password.encode(), stored_hash)
         except ValueError:
-            return False
+
         if check_password:
             print(f"User {login} authenticated successfully.")
             print(user_data)
@@ -69,3 +70,4 @@ def get_user_info(token, login, password):
             return False
     except w3except.InvalidAddress:
         return False
+

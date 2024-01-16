@@ -1,5 +1,4 @@
 from flask import session, redirect, url_for, render_template, jsonify
-from flask_login import current_user, login_required
 from utils.mysql_actions import get_user_elections_dict
 
 

@@ -1,0 +1,16 @@
+{
+  "name": "ethervote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leskov.M Moskvitin.A",
+  "license": "ISC",
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.11.5"
+  }
+}
