@@ -14,6 +14,7 @@ def get_free_account():
     contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
     for token in w3.eth.accounts:
         user_data = contract.functions.getUserData(token).call()
+        user_data = contract.functions.getUserData(token).call()
         print(token, user_data)
         if user_data == ['', '']:
             return token
@@ -33,6 +34,7 @@ def register_user(login, password):
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
         # Вызываем функцию контракта для регистрации пользователя
+        tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
         tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
 
         # Ждем, пока транзакция будет подтверждена
@@ -69,3 +71,4 @@ def get_user_info(token, login, password):
             return False
     except w3except.InvalidAddress:
         return False
+
