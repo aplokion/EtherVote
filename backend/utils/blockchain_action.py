@@ -13,7 +13,7 @@ def get_free_account():
     contract_info = contract_info.get('UserRegistry')
     contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
     for token in w3.eth.accounts:
-        user_data = contract.functions.getUserData().call({'from': token})
+        user_data = contract.functions.getUserData(token).call()
         print(token, user_data)
         if user_data == ['', '']:
             return token
@@ -33,7 +33,7 @@ def register_user(login, password):
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
         # Вызываем функцию контракта для регистрации пользователя
-        tx_hash = contract.functions.registerUser(login, hash_password.decode('utf-8')).transact({'from': free_account})
+        tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
 
         # Ждем, пока транзакция будет подтверждена
         w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -51,12 +51,16 @@ def get_user_info(token, login, password):
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
         # Вызываем функцию контракта для получения данных пользователя
-        user_data = contract.functions.getUserData().call({'from': token})
 
+        # user_data = contract.functions.getUserData().call({'from': token})
+        user_data = contract.functions.getUserData(token).call()
         # Проверяем, совпадает ли пароль
         stored_password = user_data[1]
-        stored_hash = stored_password.encode('utf-8')
-        check_password = bcrypt.checkpw(password.encode(), stored_hash)
+        try:
+            stored_hash = stored_password.encode('utf-8')
+            check_password = bcrypt.checkpw(password.encode(), stored_hash)
+        except ValueError:
+
         if check_password:
             print(f"User {login} authenticated successfully.")
             print(user_data)
@@ -66,3 +70,4 @@ def get_user_info(token, login, password):
             return False
     except w3except.InvalidAddress:
         return False
+
