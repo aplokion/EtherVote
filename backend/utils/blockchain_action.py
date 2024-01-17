@@ -156,20 +156,20 @@ def vote_in_voting(user_address, proposal_index, option_index):
 
 
 # def main():
-#     # token = w3.eth.accounts[0]
-#     # topic = "Лучший вариант"
-#     # description = "Выберите лучший вариант из предложенных"
-#     # options = ["Вариант A", "Вариант B", "Вариант C"]
+#     token = w3.eth.accounts[0]
+#     topic = "Лучший вариант"
+#     description = "Выберите лучший вариант из предложенных"
+#     options = ["Вариант A", "Вариант B", "Вариант C"]
 
-#     # result = create_voting(token, topic, description, options)
+#     result = create_voting(token, topic, description, options)
 
-#     # if 'success' in result:
-#     #     print("Голосование успешно создано!")
-#     # else:
-#     #     print(f"Ошибка: {result.get('error')}")
+#     if 'success' in result:
+#         print("Голосование успешно создано!")
+#     else:
+#         print(f"Ошибка: {result.get('error')}")
 
-#     # votings = get_all_votings()
-#     # print("Информация о голосованиях:", votings)
+#     votings = get_all_votings()
+#     print("Информация о голосованиях:", votings)
 #     print(get_voting_info(0))
 #     user_token = "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0"
 #     proposal_index = 0
