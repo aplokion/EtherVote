@@ -1,18 +1,16 @@
 from flask import session, redirect, url_for, render_template, jsonify
-from utils.mysql_actions import get_user_elections_dict
 
 
 def enter_account():
-    username = session.get('username')
-    if not username:
+    user_token = session.get("token")
+    if not user_token:
         return redirect(url_for('auth.login'))
-    return render_template('account.html', username=username)
+    return render_template('account.html', username=session.get("username"))
 
 
 def get_elections_list():
-    user_id = session.get("user_id")
-    if not user_id:
-        return jsonify({})
+    user_token = session.get("token")
+    if not user_token:
+        return redirect(url_for('auth.login'))
 
-    election_dict = get_user_elections_dict(user_id)
-    return jsonify(election_dict)
+    return jsonify({})

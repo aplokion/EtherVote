@@ -21,3 +21,4 @@ etherium/zk/proving.key
 etherium/zk/out.r1cs
 etherium/zk/out
 etherium/zk/abi.json
+etherium/zk/verifier.sol
