@@ -13,13 +13,13 @@ contract Voting {
     }
 
     Proposal[] public proposals;
-    address private verifier;
+    // address private verifier;
 
     event Voted(address indexed voter, uint256 proposalIndex, uint256 optionIndex);
 
-    constructor(address _verifier) {
-        verifier = _verifier;
-    }
+    // constructor(address _verifier) {
+    //     verifier = _verifier;
+    // }
 
     function addProposal(string memory _topic, string memory _description, string[] memory _options) external {
         require(_options.length > 0, "At least one option required");
