@@ -1,6 +1,6 @@
 from classes.login import LoginForm
 from classes.registration import RegistrationForm
-from flask import render_template, flash, request, session, jsonify
+from flask import render_template, request, session, jsonify
 from utils.blockchain_action import get_user_info
 
 
@@ -14,7 +14,6 @@ def login():
             token = form_login.token.data
             user = get_user_info(token, username, password)
             if user:
-                flash('Login successful!', 'success')
                 session["username"] = username
                 session["token"] = token
                 return jsonify({"success": "Login successefuly"})
