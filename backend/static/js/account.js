@@ -3,7 +3,7 @@ $(document).ready(function () {
         const electionsList = $('#elections-list');
 
         if ($.isEmptyObject(data)) {
-            electionsList.append('<li class="list-group-item">Пользователь не участвует в голосованиях</li>');
+            electionsList.append('<li class="list-group-item">Пользователь не учавствовал в голосованиях</li>');
         } else {
             $.each(data, function (electionId, electionInfo) {
                 electionsList.append(

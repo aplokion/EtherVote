@@ -1,0 +1,15 @@
+.container{
+    padding-top: 50px;
+}
+
+.voting {
+    display: block;
+    margin-bottom: 5px;
+    width: 400px;
+    background-color: gray;
+    border-color: gray;
+}
+
+.form-control{
+    margin-top: 5px;
+}
