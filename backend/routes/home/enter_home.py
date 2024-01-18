@@ -1,5 +1,6 @@
 from flask import session, redirect, url_for, render_template, jsonify, request
 from utils.blockchain_action import get_all_votings, vote_in_voting, create_voting
+import traceback
 
 
 def home():
@@ -26,6 +27,7 @@ def vote():
         if not user_token:
             return redirect(url_for('auth.login'))
         data = request.get_json(force=True)
+        print(data)
         proposal_index = data.get('proposal_index')
         option_index = data.get('option_index')
 
@@ -38,6 +40,7 @@ def vote():
             raise Exception(is_voted.get('errorr'))
 
     except Exception as e:
+        print(traceback.format_exc())
         return jsonify({"error": "Ошибка при голосовании",
                         "message": str(e)}), 500
 

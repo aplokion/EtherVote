@@ -34,7 +34,6 @@ def register_user(login, password):
 
         # Вызываем функцию контракта для регистрации пользователя
         tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
-        tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
 
         # Ждем, пока транзакция будет подтверждена
         w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -157,9 +156,9 @@ def vote_in_voting(user_address, proposal_index, option_index):
 
 # def main():
 #     token = w3.eth.accounts[0]
-#     topic = "Лучший вариант"
-#     description = "Выберите лучший вариант из предложенных"
-#     options = ["Вариант A", "Вариант B", "Вариант C"]
+#     topic = "Лучший вариант2"
+#     description = "Выберите лучший вариант из предложенных2"
+#     options = ["Вариант A1", "Вариант B1", "Вариант C1"]
 
 #     result = create_voting(token, topic, description, options)
 
@@ -172,8 +171,8 @@ def vote_in_voting(user_address, proposal_index, option_index):
 #     print("Информация о голосованиях:", votings)
 #     print(get_voting_info(0))
 #     user_token = "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0"
-#     proposal_index = 0
-#     option_index = 0
+#     proposal_index = 1
+#     option_index = 1
 
 #     result = vote_in_voting(user_token, proposal_index, option_index)
 

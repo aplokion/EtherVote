@@ -4,6 +4,74 @@
 Домашняя страница
 {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}?v={{ random }}">
+{% endblock %}
+
 {% block body %}
-<h1>Все голосования</h1>
+<div class="container">
+    <div class="row">
+        <button type="button" class="btn btn-success" id="addVotingButton">Добавить голосование</button>
+        <div class="col-12 text-center mt-4">
+            <button type="button" class="btn btn-primary" id="allVotingsButton">Все голосования</button>
+            <button type="button" class="btn btn-primary" id="yourVotingsButton">Ваши голосования</button>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div id="voting-list" class="d-flex flex-column align-items-center"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="votingModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Варианты ответа</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body" id="modalBody">
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="voteButton">Голосовать</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addVotingModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить голосование</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="addVotingForm">
+                    <label for="votingTopic" class="form-label">Название голосования:</label>
+                    <input type="text" class="form-control" id="votingTopic" required>
+
+                    <label for="votingDescription" class="form-label">Описание голосования:</label>
+                    <textarea class="form-control" id="votingDescription" required></textarea>
+
+                    <input type="text" class="form-control" id="option1" placeholder="Вариант ответа 1" required>
+                    <input type="text" class="form-control" id="option1" placeholder="Вариант ответа 2" required>
+
+                    <button type="button" class="btn btn-primary" style="margin-top: 5px;" id="addOptionButton">Добавить вариант ответа</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="createVotingButton">Создать голосование</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/home.js') }}?v={{ random }}"></script>
 {% endblock %}

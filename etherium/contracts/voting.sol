@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
-import "../zk/Verifier.sol";
+// import "../zk/Verifier.sol";
 
 contract Voting {
     struct Proposal {
