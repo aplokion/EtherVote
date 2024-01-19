@@ -1,41 +1,23 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Получение списка голосований при загрузке страницы
     displayAllVotings();
 
-    const allVotingsButton = document.getElementById('allVotingsButton');
-    allVotingsButton.addEventListener('click', displayAllVotings);
-
-    // Обработчик события для кнопки "Ваши голосования"
-    const yourVotingsButton = document.getElementById('yourVotingsButton');
-    yourVotingsButton.addEventListener('click', displayYourVotings);
-
-    // Функция для получения списка голосований и отображения их на странице
     function displayAllVotings() {
         fetch('/home/get_all_votings')
             .then(response => response.json())
             .then(data => {
-                // Очищаем предыдущий список голосований
                 clearVotings();
 
-                // Создаем элементы для каждого голосования и добавляем их на страницу
                 for (let index in data) {
                     const voting = data[index];
-                    const votingElement = createVotingElement(index, voting.topic);
+                    const votingElement = createVotingElement(index, voting.topic, voting.description);
                     document.getElementById('voting-list').appendChild(votingElement);
                 }
 
-                // Добавляем обработчик события для открытия модального окна при клике на голосование
                 addVotingClickEvent(data);
             })
             .catch(error => console.error('Error:', error));
     }
 
-    // СУДА ЗАМЕНИТЬ НА МОИ ГОЛОСОВАНИЯ
-    function displayYourVotings() {
-        clearVotings();
-    }
-
-    // Функция для очистки списка голосований на странице
     function clearVotings() {
         const votingList = document.getElementById('voting-list');
         while (votingList.firstChild) {
@@ -43,16 +25,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Функция для создания элемента голосования
-    function createVotingElement(index, topic) {
-        const votingElement = document.createElement('button');
-        votingElement.className = 'btn btn-primary voting'; // Добавьте класс voting
+    function createVotingElement(index, topic, description) {
+        const votingElement = document.createElement('li');
+        votingElement.className = 'list-group-item';
         votingElement.dataset.index = index;
-        votingElement.innerText = topic;
+        votingElement.innerHTML = `
+            <div class="voting-content">
+                <strong>Тема: ${topic}</strong><br>
+                Описание: ${description}<br>
+            </div>
+            <button class="btn btn-secondary vote-button" data-bs-toggle="modal" data-bs-target="#votingModal">Голосовать</button>
+        `;
         return votingElement;
     }
 
-    // Функция для добавления обработчика события при клике на голосование
+
     function addVotingClickEvent(data) {
         const votings = document.getElementsByClassName('voting');
         for (let voting of votings) {
@@ -62,27 +49,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 openModal(index, votingData);
             });
         }
+
+        const voteButtons = document.getElementsByClassName('vote-button');
+        for (let voteButton of voteButtons) {
+            voteButton.addEventListener('click', function (event) {
+                event.stopPropagation();
+
+                const votingElement = this.closest('.list-group-item');
+                const index = votingElement.dataset.index;
+                const votingData = data[index];
+                openModal(index, votingData);
+            });
+        }
     }
 
-    // Функция для открытия модального окна с вариантами ответа
     function openModal(index, votingData) {
         const modal = new bootstrap.Modal(document.getElementById('votingModal'));
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         const voteButton = document.getElementById('voteButton');
 
-        // Заголовок модального окна
         modalTitle.innerText = votingData.topic;
 
-        // Очищаем предыдущие варианты ответа
         modalBody.innerHTML = '';
 
-        // Отображение описания голосования и количества проголосовавших
         const descriptionElement = document.createElement('p');
         descriptionElement.innerText = `Описание: ${votingData.description}\nКоличество проголосовавших: ${votingData.votes.reduce((a, b) => a + b, 0)}`;
         modalBody.appendChild(descriptionElement);
 
-        // Создаем радиокнопки для каждого варианта ответа и процент голосов за каждый вариант
         const totalVotes = votingData.votes.reduce((a, b) => a + b, 0);
         const percentageZeroVotes = totalVotes === 0 ? 0 : 100 / totalVotes;
 
@@ -94,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modalBody.appendChild(radioInput);
         }
 
-        // Добавляем обработчик события для отправки голоса
         voteButton.onclick = function () {
             const selectedOption = document.querySelector('input[name="options"]:checked');
             if (selectedOption) {
@@ -105,22 +98,24 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
 
-        // Открываем модальное окно
         modal.show();
+
+        const closeButton = document.querySelector('.modal button[data-bs-dismiss="modal"]');
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+        });
     }
 
-    // Функция для создания радиокнопки для варианта ответа
     function createRadioInput(index, option, votes, percentage) {
         const radioInput = document.createElement('div');
         radioInput.className = 'form-check';
         radioInput.innerHTML = `
-            <input class="form-check-input" type="radio" name="options" value="${index}">
-            <label class="form-check-label">${option} (${percentage.toFixed(2)}%)</label>
-        `;
+        <input class="form-check-input" type="radio" name="options" value="${index}">
+        <label class="form-check-label">${option} (${percentage.toFixed(2)}%)</label>
+    `;
         return radioInput;
     }
 
-    // Функция для отправки голоса
     function sendVote(proposalIndex, optionIndex) {
         const data = {
             proposal_index: parseInt(proposalIndex),
@@ -136,20 +131,29 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.success);
+                if (data.success) {
+                    alert('Ваш голос успешно учтен.');
+
+                    displayAllVotings();
+
+                    const participatedVotings = JSON.parse(localStorage.getItem('participatedVotings')) || [];
+                    participatedVotings.push(proposalIndex);
+                    localStorage.setItem('participatedVotings', JSON.stringify(participatedVotings));
+                } else {
+                    alert('Вы уже участвовали в этом голосовании.');
+                }
             })
             .catch(error => console.error('Error:', error));
-        displayAllVotings();
     }
 
-    // Добавление обработчика события для кнопки "Добавить голосование"
     const addVotingButton = document.getElementById('addVotingButton');
-    addVotingButton.addEventListener('click', function () {
-        const addVotingModal = new bootstrap.Modal(document.getElementById('addVotingModal'));
-        addVotingModal.show();
-    });
+    if (addVotingButton) {
+        addVotingButton.addEventListener('click', function () {
+            const addVotingModal = new bootstrap.Modal(document.getElementById('addVotingModal'));
+            addVotingModal.show();
+        });
+    }
 
-    // Добавление обработчика события для кнопки "Добавить вариант ответа"
     const addOptionButton = document.getElementById('addOptionButton');
     const addVotingForm = document.getElementById('addVotingForm');
 
@@ -158,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const optionIndex = optionInputs.length;
 
         if (optionIndex > 10) {
-            // Проверка на максимальное количество вариантов
             alert('Достигнуто максимальное количество вариантов ответа (10).');
             return;
         }
@@ -172,44 +175,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
         addVotingForm.insertBefore(newOptionInput, addOptionButton);
 
-        // Добавление обработчика события для кнопки "Удалить вариант ответа"
         const removeOptionButton = document.getElementById(`removeOptionButton${optionIndex}`);
         removeOptionButton.addEventListener('click', function () {
             addVotingForm.removeChild(newOptionInput);
-            clearVotingForm(); // Обновляем значения темы и описания при удалении
         });
     });
 
     function clearVotingForm() {
-        // Очистка всех полей формы, кроме первых двух
         const form = document.getElementById('addVotingForm');
         const formInputs = form.querySelectorAll('input[type="text"]');
         const topicInput = document.getElementById('votingTopic');
         const descriptionInput = document.getElementById('votingDescription');
 
-        // Очистка полей вариантов ответа
         formInputs.forEach((input, index) => {
             if (index > 0) {
                 input.value = '';
             }
         });
 
-        // Очистка полей темы и описания
         topicInput.value = '';
         descriptionInput.value = '';
     }
 
-    // Добавление обработчика события для кнопки "Создать голосование"
     const createVotingButton = document.getElementById('createVotingButton');
     createVotingButton.addEventListener('click', function () {
         const topic = document.getElementById('votingTopic').value;
         const description = document.getElementById('votingDescription').value;
 
+        if (!topic || !description) {
+            alert('Заполните тему и описание голосования.');
+            return;
+        }
+
         const options = [];
+
         for (let i = 1; i <= 10; i++) {
             const optionInput = document.getElementById(`option${i}`);
             if (optionInput) {
-                options.push(optionInput.value);
+                const optionValue = optionInput.value.trim();
+                if (!optionValue) {
+                    alert(`Заполните все варианты ответа (включая вариант ответа ${i}).`);
+                    return;
+                }
+                options.push(optionValue);
             }
         }
 
@@ -230,10 +238,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 alert(data.success);
                 if (data.success) {
-                    // Закрываем модальное окно после успешного создания голосования
                     const addVotingModal = new bootstrap.Modal(document.getElementById('addVotingModal'));
                     addVotingModal.hide();
-                    // Обновляем список голосований
                     displayAllVotings();
                     clearVotingForm();
                 }

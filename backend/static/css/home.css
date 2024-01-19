@@ -1,15 +1,55 @@
-.container{
+.container {
     padding-top: 50px;
 }
 
 .voting {
     display: block;
-    margin-bottom: 5px;
+    color: black;
     width: 400px;
-    background-color: gray;
-    border-color: gray;
+    background-color: transparent;
+    border: none;
 }
 
-.form-control{
+#voting-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.voting:hover {
+    background-color: rgb(163, 163, 163);
+}
+
+.form-control {
     margin-top: 5px;
+}
+
+.modal-body {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.voting {
+    display: block;
+    width: 400px;
+    background-color: transparent;
+    border: solid 1px black;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.list-group-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.voting-content {
+    flex-grow: 1;
+    width: 100%;
+}
+
+.vote-button {
+    width: 100%;
 }
