@@ -1,6 +1,6 @@
 from web3 import Web3
 import bcrypt, traceback
-from contracts_info import read_contract_info
+from .contracts_info import read_contract_info
 import web3.exceptions as w3except
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
 w3.eth.defaultAccount = w3.eth.accounts[0]
