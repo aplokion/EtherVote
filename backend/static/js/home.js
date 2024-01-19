@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     displayAllVotings();
-
     function displayAllVotings() {
         fetch('/home/get_all_votings')
             .then(response => response.json())
@@ -93,8 +92,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (selectedOption) {
                 const optionIndex = selectedOption.value;
                 sendVote(index, optionIndex);
+                displayAllVotings();
             } else {
-                alert('Выберите вариант ответа');
+                Swal.fire({text: "Выберите вариант ответа",icon: "question"});
             }
         };
 
@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const closeButton = document.querySelector('.modal button[data-bs-dismiss="modal"]');
         closeButton.addEventListener('click', function () {
             modal.hide();
+            document.querySelector("body > div.modal-backdrop.show").remove();
         });
     }
 
@@ -132,24 +133,26 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Ваш голос успешно учтен.');
-
-                    displayAllVotings();
+                    Swal.fire({icon: "success", title: "Ваш голос успешно учтен"});
 
                     const participatedVotings = JSON.parse(localStorage.getItem('participatedVotings')) || [];
                     participatedVotings.push(proposalIndex);
                     localStorage.setItem('participatedVotings', JSON.stringify(participatedVotings));
                 } else {
-                    alert('Вы уже участвовали в этом голосовании.');
+                    Swal.fire({icon: "error", title: "Вы уже участвовали в этом голосовании"});
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => Swal.fire({icon: "error", title: "Ошибка!", text: error}));
     }
 
     const addVotingButton = document.getElementById('addVotingButton');
     if (addVotingButton) {
         addVotingButton.addEventListener('click', function () {
             const addVotingModal = new bootstrap.Modal(document.getElementById('addVotingModal'));
+            const closeModal = document.getElementById("close_modal_b");
+            closeModal.addEventListener('click', ()=>{
+                addVotingModal.hide();
+            })
             addVotingModal.show();
         });
     }
@@ -162,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const optionIndex = optionInputs.length;
 
         if (optionIndex > 10) {
-            alert('Достигнуто максимальное количество вариантов ответа (10).');
+            Swal.fire({text: "Достигнуто максимальное количество вариантов ответа (10)",icon: "question"});
             return;
         }
 
@@ -170,8 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
         newOptionInput.className = 'input-group mb-3';
         newOptionInput.innerHTML = `
         <input type="text" class="form-control" id="option${optionIndex}" placeholder="Вариант ответа ${optionIndex}">
-        <button type="button" class="btn btn-danger" style="margin-top:5px" id="removeOptionButton${optionIndex}">Удалить</button>
-    `;
+        <button type="button" class="btn btn-danger" style="margin-top:5px" id="removeOptionButton${optionIndex}">Удалить</button>`;
 
         addVotingForm.insertBefore(newOptionInput, addOptionButton);
 
@@ -203,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const description = document.getElementById('votingDescription').value;
 
         if (!topic || !description) {
-            alert('Заполните тему и описание голосования.');
+            Swal.fire({text: "Заполните тему и описание голосования",icon: "question"});
             return;
         }
 
@@ -214,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (optionInput) {
                 const optionValue = optionInput.value.trim();
                 if (!optionValue) {
-                    alert(`Заполните все варианты ответа (включая вариант ответа ${i}).`);
+                    Swal.fire({text: `Заполните все варианты ответа (включая вариант ответа ${i})`,icon: "question"});
                     return;
                 }
                 options.push(optionValue);
@@ -236,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.success);
+                Swal.fire({text: `${data.success}`,icon: "success"});
                 if (data.success) {
                     const addVotingModal = new bootstrap.Modal(document.getElementById('addVotingModal'));
                     addVotingModal.hide();

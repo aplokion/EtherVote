@@ -3,7 +3,9 @@
 {% block title %}
 Аккаунт
 {% endblock %}
-
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}?v={{ random }}">
+{% endblock %}
 {% block body %}
 <div class="user-info">
     <h1>Информация о пользователе</h1>
@@ -13,8 +15,8 @@
 
 <div class="row">
     <div class="col-12 text-center mt-4">
-        <button type="button" class="btn btn-secondary" id="participationButton">Участия в голосованиях</button>
-        <button type="button" class="btn btn-secondary" id="createdButton">Созданные голосования</button>
+        <button type="button" class="btn" id="participationButton">Участия в голосованиях</button>
+        <button type="button" class="btn" id="createdButton">Созданные голосования</button>
     </div>
 </div>
 
