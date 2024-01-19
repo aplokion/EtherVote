@@ -37,3 +37,14 @@ div {
 .list-group-item strong {
     font-size: 18px;
 }
+
+.logo{
+    margin-left: 6%;
+    font-size: 28px;
+    font-weight: bold;
+
+}
+.logo-text{
+    text-decoration: none;
+    color: black;
+}
