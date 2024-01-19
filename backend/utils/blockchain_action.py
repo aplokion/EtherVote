@@ -5,8 +5,6 @@ import web3.exceptions as w3except
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
 w3.eth.defaultAccount = w3.eth.accounts[0]
 
-# print(w3.eth.defaultAccount)
-
 
 def get_free_account():
     contract_info = read_contract_info()
@@ -173,38 +171,3 @@ def get_elections_user_create(user_token):
     except Exception:
         print(traceback.format_exc())
         return {}
-
-
-# def main():
-#     token = w3.eth.accounts[0]
-
-#     topic = "Лучший вариант7777"
-#     description = "Выберите"
-#     options = ["A", "B", "C"]
-
-#     result = create_voting(token, topic, description, options)
-
-#     if 'success' in result:
-#         print("Голосование успешно создано!")
-#     else:
-#         print(f"Ошибка: {result.get('error')}")
-#     print(get_elections_user_create(token))
-    # print(get_all_votings())
-    # user_token = "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0"
-    # user_token = w3.eth.accounts[1]
-    # proposal_index = 0
-    # option_index = 2
-
-    # result = vote_in_voting(user_token, proposal_index, option_index)
-
-    # if 'success' in result:
-    #     print("Голос успешно учтен!")
-    # else:
-    #     print(f"Ошибка: {result.get('error')}")
-
-    # print(get_voting_info(0))
-    # print(get_elections_user_create(w3.eth.accounts[1]))
-
-
-# if __name__ == "__main__":
-#     main()

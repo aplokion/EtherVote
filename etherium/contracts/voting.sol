@@ -34,11 +34,7 @@ contract Voting {
         for (uint256 i = 0; i < _options.length; i++) {
             newElection.optionIndices.push(elections.length + i);
         }
-
     }
-
-
-
 
     function vote(uint256 electionIndex, uint256 optionIndex) external {
         require(electionIndex < elections.length, "Invalid election index");
@@ -123,12 +119,10 @@ contract Voting {
                 count++;
             }
         }
-
         assembly {
             mstore(createdElections, count)
         }
 
         return createdElections;
     }
-
 }
