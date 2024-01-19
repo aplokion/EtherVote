@@ -12,4 +12,5 @@
         -Установить пакеты для Python из requirements.txt
         -Запустить файл app.py
 Тестирование:
-    -В папке etherium выполнить команду `truffle test`
+    Контракты:
+        -В папке etherium выполнить команду `truffle test`
