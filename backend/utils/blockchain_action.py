@@ -1,9 +1,9 @@
 from web3 import Web3
-import bcrypt
-from .contracts_info import read_contract_info
+import bcrypt, traceback
+from contracts_info import read_contract_info
 import web3.exceptions as w3except
-w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))  # Замените на свой адрес Ethereum узла
-w3.eth.defaultAccount = w3.eth.accounts[0]  # Устанавливаем аккаунт по умолчанию
+w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
+w3.eth.defaultAccount = w3.eth.accounts[0]
 
 # print(w3.eth.defaultAccount)
 
@@ -29,13 +29,10 @@ def register_user(login, password):
         password = bytes(password, encoding='utf-8')
         hash_password = bcrypt.hashpw(password, bcrypt.gensalt())
 
-        # Создаем объект контракта
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
-        # Вызываем функцию контракта для регистрации пользователя
         tx_hash = contract.functions.registerUser(free_account, login, hash_password.decode('utf-8')).transact({'from': free_account})
 
-        # Ждем, пока транзакция будет подтверждена
         w3.eth.wait_for_transaction_receipt(tx_hash)
         return {'success': free_account}
     else:
@@ -47,11 +44,8 @@ def get_user_info(token, login, password):
         contract_info = read_contract_info()
         contract_info = contract_info.get('UserRegistry')
 
-        # Создаем объект контракта
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
-        # Вызываем функцию контракта для получения данных пользователя
-        # user_data = contract.functions.getUserData().call({'from': token})
         user_data = contract.functions.getUserData(token).call()
         # Проверяем, совпадает ли пароль
         stored_password = user_data[1]
@@ -78,10 +72,10 @@ def create_voting(token, topic, description, options):
 
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
-        tx_hash = contract.functions.addProposal(topic, description, options).transact({'from': token})
+        tx_hash = contract.functions.addElection(topic, description, options).transact({'from': token})
 
-        w3.eth.wait_for_transaction_receipt(tx_hash)
-
+        receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+        print(receipt['logs'])
         return {'success': True}
     except w3except.InvalidAddress:
         return {'error': "Invalid address."}
@@ -96,15 +90,13 @@ def get_all_votings():
 
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
-        # Получаем количество голосований
-        num_proposals = contract.functions.proposalsCount().call()
+        num_elections = contract.functions.electionsCount().call()
 
-        # Получаем информацию о каждом голосовании
         votings = []
 
-        for i in range(num_proposals):
-            proposal_info = contract.functions.getProposalInfo(i).call()
-            topic, description, option_indices, votes = proposal_info
+        for i in range(num_elections):
+            election_info = contract.functions.getElectionInfo(i).call()
+            topic, description, option_indices, votes = election_info
             votings.append({
                 'topic': topic,
                 'description': description,
@@ -118,16 +110,15 @@ def get_all_votings():
         return None
 
 
-def get_voting_info(proposal_index):
+def get_voting_info(election_index):
     try:
         contract_info = read_contract_info()
         contract_info = contract_info.get('Voting')
 
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
-        # Получаем информацию о конкретном голосовании
-        proposal_info = contract.functions.getProposalInfo(proposal_index).call()
-        topic, description, option_indices, votes = proposal_info
+        election_info = contract.functions.getElectionInfo(election_index).call()
+        topic, description, option_indices, votes = election_info
 
         return {'topic': topic,
                 'description': description,
@@ -138,13 +129,13 @@ def get_voting_info(proposal_index):
         return None
 
 
-def vote_in_voting(user_address, proposal_index, option_index):
+def vote_in_voting(user_address, election_index, option_index):
     try:
         contract_info_voting = read_contract_info().get('Voting')
 
         contract_voting = w3.eth.contract(address=contract_info_voting.get('address'), abi=contract_info_voting.get('abi'))
 
-        tx_hash = contract_voting.functions.vote(proposal_index, option_index).transact({'from': user_address})
+        tx_hash = contract_voting.functions.vote(election_index, option_index).transact({'from': user_address})
 
         w3.eth.wait_for_transaction_receipt(tx_hash)
 
@@ -154,11 +145,42 @@ def vote_in_voting(user_address, proposal_index, option_index):
         return {'error': str(e)}
 
 
+def get_elections_user_voted_in(user_token):
+    try:
+        contract_info_voting = read_contract_info().get('Voting')
+
+        contract_voting = w3.eth.contract(address=contract_info_voting.get('address'), abi=contract_info_voting.get('abi'))
+
+        elections_list = contract_voting.functions.getParticipatedElections(user_token).call()
+
+        elections = {i: get_voting_info(i) for i in elections_list}
+        return elections
+    except Exception:
+        print(traceback.format_exc())
+        return {}
+
+
+def get_elections_user_create(user_token):
+    try:
+        contract_info_voting = read_contract_info().get('Voting')
+
+        contract_voting = w3.eth.contract(address=contract_info_voting.get('address'), abi=contract_info_voting.get('abi'))
+
+        elections_list = contract_voting.functions.getCreatedElections(user_token).call()
+
+        elections = {i: get_voting_info(i) for i in elections_list}
+        return elections
+    except Exception:
+        print(traceback.format_exc())
+        return {}
+
+
 # def main():
 #     token = w3.eth.accounts[0]
-#     topic = "Лучший вариант2"
-#     description = "Выберите лучший вариант из предложенных2"
-#     options = ["Вариант A1", "Вариант B1", "Вариант C1"]
+
+#     topic = "Лучший вариант7777"
+#     description = "Выберите"
+#     options = ["A", "B", "C"]
 
 #     result = create_voting(token, topic, description, options)
 
@@ -166,22 +188,22 @@ def vote_in_voting(user_address, proposal_index, option_index):
 #         print("Голосование успешно создано!")
 #     else:
 #         print(f"Ошибка: {result.get('error')}")
+#     print(get_elections_user_create(token))
+    # print(get_all_votings())
+    # user_token = "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0"
+    # user_token = w3.eth.accounts[1]
+    # proposal_index = 0
+    # option_index = 2
 
-#     votings = get_all_votings()
-#     print("Информация о голосованиях:", votings)
-#     print(get_voting_info(0))
-#     user_token = "0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0"
-#     proposal_index = 1
-#     option_index = 1
+    # result = vote_in_voting(user_token, proposal_index, option_index)
 
-#     result = vote_in_voting(user_token, proposal_index, option_index)
+    # if 'success' in result:
+    #     print("Голос успешно учтен!")
+    # else:
+    #     print(f"Ошибка: {result.get('error')}")
 
-#     if 'success' in result:
-#         print("Голос успешно учтен!")
-#     else:
-#         print(f"Ошибка: {result.get('error')}")
-
-#     print(get_voting_info(0))
+    # print(get_voting_info(0))
+    # print(get_elections_user_create(w3.eth.accounts[1]))
 
 
 # if __name__ == "__main__":

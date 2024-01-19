@@ -9,7 +9,7 @@ ul {
 
 li {
     margin-bottom: 10px;
-    color: red; /* Цвет сообщений об ошибках */
+    color: red;
 }
 
 .form-label {
