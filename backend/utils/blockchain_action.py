@@ -45,7 +45,7 @@ def get_user_info(token, login, password):
         contract = w3.eth.contract(address=contract_info.get('address'), abi=contract_info.get('abi'))
 
         user_data = contract.functions.getUserData(token).call()
-        # Проверяем, совпадает ли пароль
+
         stored_password = user_data[1]
         try:
             stored_hash = stored_password.encode('utf-8')

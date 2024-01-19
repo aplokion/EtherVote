@@ -19,7 +19,7 @@
 ##### В /etherium
 Установите npm-пакеты:
 ```sh
-npm i pip install -r requirements.txt
+npm i
 ```
 ##### В /backend
 Установите pip-пакеты:
