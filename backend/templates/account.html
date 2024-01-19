@@ -11,7 +11,14 @@
     <p class="user-login">Логин: {{ username }}</p>
 </div>
 
-<h2>Голосования пользователя:</h2>
+<div class="row">
+    <div class="col-12 text-center mt-4">
+        <button type="button" class="btn btn-secondary" id="participationButton">Участия в голосованиях</button>
+        <button type="button" class="btn btn-secondary" id="createdButton">Созданные голосования</button>
+    </div>
+</div>
+
+<h2 id="elections-heading">Голосования пользователя:</h2>
 <ul id="elections-list" class="list-group"></ul>
 
 <script src="{{ url_for('static', filename='js/account.js') }}"></script>
