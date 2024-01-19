@@ -31,7 +31,7 @@ def vote():
         proposal_index = data.get('proposal_index')
         option_index = data.get('option_index')
 
-        if not proposal_index or not option_index:
+        if proposal_index is None or option_index is None:
             raise Exception('Ошибка при получении варианта голоса')
         is_voted = vote_in_voting(user_token, proposal_index, option_index)
         if 'success' in is_voted:
